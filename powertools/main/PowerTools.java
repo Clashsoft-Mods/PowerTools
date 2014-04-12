@@ -54,6 +54,10 @@ public class PowerTools
 	protected static Map<Integer, IMapLimit>	mapLimits				= new HashMap();
 	
 	public static double						whisperDistance			= 16D;
+	public static boolean						defaultBorderInfo;
+	public static boolean						allPlayersCanClaim;
+	public static int							maxChunksPerPlayer;
+	public static int						autoUnclaimDays;
 	
 	public static boolean						powerLoginLoaded		= false;
 	public static boolean						chunkProtectionLoaded	= false;
@@ -69,6 +73,10 @@ public class PowerTools
 			config = new Configuration(event.getSuggestedConfigurationFile());
 			
 			whisperDistance = config.get("chat", "Whisper Distance", whisperDistance).getDouble(whisperDistance);
+			allPlayersCanClaim = config.get("players", "All Players CanClaim", true, "true: All players are allowed to claim chunks. / false: Only op's are allowed to claim.").getBoolean(false);
+			autoUnclaimDays = config.get("players", "Auto Unclaim In Days", 7, "Chunks will automaticly be unclaimed if owner doesn't visit them for X days. 0=never unclaim").getInt();
+			defaultBorderInfo = config.get("players", "Default Border Info", true, "This sets the default of displaying messages when crossing chunk borders. true / false").getBoolean(true);
+			maxChunksPerPlayer = config.get("players", "Max Chunks per Player", 4, "This defines how many chunks each player is allowed to claim.").getInt();
 		}
 	}
 	

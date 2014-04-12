@@ -3,6 +3,8 @@ package powertools.main.lib;
 import java.util.ArrayList;
 import java.util.List;
 
+import powertools.main.PowerTools;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -48,8 +50,8 @@ public class PlayerInfo
 		this.chunkPos = new ChunkPos(0, 0, 0);
 		this.ownerMessage = "";
 		this.chunksOwned = 0;
-		this.maxChunks = 8;
-		this.borderInfo = true;
+		this.maxChunks = PowerTools.maxChunksPerPlayer;
+		this.borderInfo = PowerTools.defaultBorderInfo;
 		
 		this.time = System.currentTimeMillis();
 		

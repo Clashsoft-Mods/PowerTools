@@ -100,7 +100,7 @@ public class CommandChunk extends CommandBase
 	
 	public static boolean canClaim(ICommandSender sender)
 	{
-		return ChunkProtection.cfgAllPlayersCanClaim || isOp(sender);
+		return PowerTools.allPlayersCanClaim || isOp(sender);
 	}
 	
 	public void claim(ICommandSender sender, String name)

@@ -18,7 +18,8 @@ import powertools.main.lib.PlayerInfo;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -26,7 +27,6 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = ChunkProtection.MODID, name = ChunkProtection.NAME, version = ChunkProtection.VERSION, dependencies = ChunkProtection.DEPENDENCIES)
@@ -42,27 +42,8 @@ public class ChunkProtection
 	
 	public static Map<ChunkPos, ChunkInfo>	chunkInfo		= new HashMap();
 	
-	public static boolean					cfgDefaultBorderInfo, cfgAllPlayersCanClaim;
-	public static int						cfgMaxChunksPerPlayer, cfgAutoUnclaimInDays;
-	
 	@Instance(MODID)
 	public static ChunkProtection			instance;
-	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
-		if (event.getSide() == Side.SERVER)
-		{
-			Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-			
-			cfgAllPlayersCanClaim = config.get("players", "AllPlayersCanClaim", true, "true: All players are allowed to claim chunks. / false: Only op's are allowed to claim.").getBoolean(false);
-			cfgAutoUnclaimInDays = config.get("players", "AutoUnclaimInDays", 7, "Chunks will automaticly be unclaimed if owner doesn't visit them for X days. 0=never unclaim").getInt();
-			cfgDefaultBorderInfo = config.get("players", "DefaultBorderInfo", true, "This sets the default of displaying messages when crossing chunk borders. true / false").getBoolean(true);
-			cfgMaxChunksPerPlayer = config.get("players", "MaxChunksPerPlayer", 4, "This defines how many chunks each player is allowed to claim.").getInt();
-			
-			config.save();
-		}
-	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event)
@@ -72,7 +53,7 @@ public class ChunkProtection
 			MinecraftForge.EVENT_BUS.register(new ProtectEvents());
 			
 			TickRegistry.registerScheduledTickHandler(new ProtectTickHandler(), Side.SERVER);
-			if (cfgAutoUnclaimInDays > 0)
+			if (PowerTools.autoUnclaimDays > 0)
 			{
 				TickRegistry.registerScheduledTickHandler(new AutoUnclaimTickHandler(), Side.SERVER);
 			}
@@ -167,9 +148,9 @@ public class ChunkProtection
 		ClaimStatus compare = info.compare(chunkPos, player);
 		
 		int maxChunks = pinfo.maxChunks;
-		if (maxChunks < 0 || maxChunks >= cfgMaxChunksPerPlayer)
+		if (maxChunks < 0 || maxChunks > PowerTools.maxChunksPerPlayer)
 		{
-			maxChunks = cfgMaxChunksPerPlayer;
+			maxChunks = PowerTools.maxChunksPerPlayer;
 			pinfo.maxChunks = maxChunks;
 		}
 		

@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import powertools.chunkprotection.ChunkProtection;
 import powertools.chunkprotection.lib.ChunkInfo;
+import powertools.main.PowerTools;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -14,7 +15,7 @@ public class AutoUnclaimTickHandler implements IScheduledTickHandler
 	{
 		for (ChunkInfo cinfo : ChunkProtection.chunkInfo.values())
 		{
-			if (cinfo.isClaimed() && cinfo.getDaysSinceLastVisit() >= ChunkProtection.cfgAutoUnclaimInDays)
+			if (cinfo.isClaimed() && cinfo.getDaysSinceLastVisit() >= PowerTools.autoUnclaimDays)
 			{
 				cinfo.unclaim();
 			}
